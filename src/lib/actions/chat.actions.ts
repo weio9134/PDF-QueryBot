@@ -18,7 +18,7 @@ export async function createChat({ id, userId, pdfName, pdfUrl, createdAt, fileK
 
     // find the user that this chat will belong to
     const user = await User.findOne({ id: userId })
-    if(!user) throw new Error("Can't find user")
+    if(!user) throw new Error(`Can't find user ${userId}`)
 
     // create the new message and save it 
     const createChat = new Chat({ id, userId, pdfName, pdfUrl, createdAt, fileKey })
@@ -44,6 +44,7 @@ export async function fetchAllChat(userId: String) {
       model: Chat,
       select: "id pdfName"
     })
+    if(!chats) throw new Error(`Can't find chats by user ${userId}`)
 
     return chats
   } catch (error: any) {
@@ -57,6 +58,7 @@ export async function fetchChatById(chatId: string) {
 
     // find the corresponding chat
     const chat = await Chat.findOne({ id: chatId })
+    if(!chat) throw new Error(`Can't find chat ${chatId}`)
 
     return chat
   } catch (error: any) {
