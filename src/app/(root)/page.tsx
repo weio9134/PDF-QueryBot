@@ -4,16 +4,16 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
 import { LogIn, ArrowRight } from "lucide-react";
+import FileUpload from "@/components/FileUpload";
 
 export default async function Home() {
   const { userId } = auth()
-  const userName = userId ? (await clerkClient.users.getUser(userId)).username : ""
+  const userName = userId ? (await clerkClient().users.getUser(userId)).username : ""
 
   return (
     <main className="w-screen min-h-screen bg-gradient-to-b from-blue-100 via-blue-300 to-blue-500">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <div className="flex flex-col items-center text-center gap-8">
-
           {/* header */}
           <div className="flex items-center">
             <h1 className="text-5xl font-bold"> Get answers from any PDF! </h1>
@@ -27,11 +27,16 @@ export default async function Home() {
           }
 
           {/* user buttons */}
-          { !!userId &&
+          { !!userId 
+            ?
             <div className="flex gap-8">
               <Button className="flex gap-2 hover:invert"> Go to Chats <ArrowRight /> </Button>
               <Button className="flex gap-2 bg invert hover:invert-0"> Manage Subscription </Button>
-            </div>
+            </div> 
+            :
+            <Link href="/sign-in">
+              <Button className="flex gap-2"> Login to get started! <LogIn /> </Button>
+            </Link>
           }
 
           {/* intro text */}
@@ -40,16 +45,12 @@ export default async function Home() {
             <p> Upload your PDF and get instant answers to any questions about its content. Effortlessly find the information you need with our smart chatbot. </p>
           </div>
 
-          {/* user actions based on login */}
-          <div className="m-4">
-            { !!userId ? <h1> Upload File </h1> :
-              <Link href="/sign-in">
-                <Button className="flex gap-2"> Login to get started! <LogIn /> </Button>
-              </Link>
-            }
-          </div>
+          { !!userId && 
+            <div className="w-full ">
+              <FileUpload />
+            </div>
+          }
         </div>
-        
       </div>
     </main>
   );
