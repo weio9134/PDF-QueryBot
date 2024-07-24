@@ -1,4 +1,3 @@
-import PDFViewer from '@/components/PDFViewer'
 import SideBar from '@/components/SideBar'
 import { fetchAllChat } from '@/lib/actions/chat.actions'
 import { fetchUser } from '@/lib/actions/user.actions'
@@ -34,7 +33,10 @@ const ChatPage = async ({ params: { chatId }}: ChatPageProps) => {
 
         {/* pdf viewer */}
         <div className="max-h-screen p-4 overflow-scroll flex-[5]">
-          <PDFViewer url={currentChat?.pdfUrl || ''} />
+          <iframe 
+            src={`https://docs.google.com/gview?url=${currentChat?.pdfUrl || ''}&embedded=true`}
+            className='w-full h-full'
+          />
         </div>
 
         {/* chat log */}
