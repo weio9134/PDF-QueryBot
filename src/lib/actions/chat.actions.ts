@@ -36,15 +36,11 @@ export async function fetchAllChat(userId: String) {
   try {
     connectToDB()
 
-    // find the corresponding user and all of their chat ids and pdfs
-    const chats = await User.findOne({ id: userId }).populate({
-      path: "chatIds",
-      model: Chat,
-      select: "id pdfName"
-    })
+    // find the corresponding user and all of their chats
+    const chats = await User.findOne({ _id: userId }).populate('chatIds');
     if(!chats) throw new Error(`Can't find chats by user ${userId}`)
-
-    return chats
+    
+    return chats.chatIds
   } catch (error: any) {
     throw new Error(`Failed to fetch all chats:\n ${error.message}`)
   }
