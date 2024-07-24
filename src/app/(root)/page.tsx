@@ -1,14 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { UserButton } from "@clerk/nextjs";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
 import { LogIn, ArrowRight } from "lucide-react";
 import FileUpload from "@/components/FileUpload";
+import { updateUser } from "@/lib/actions/user.actions";
 
 export default async function Home() {
-  const { userId } = auth()
-  const userName = userId ? (await clerkClient().users.getUser(userId)).username : ""
+  const user = await currentUser();
+  const name = user?.fullName
+  if(user) {
+    await updateUser(user.id)
+  }
+  
+  // const userName = userId ? (await clerkClient().users.getUser(userId)).username : ""
 
   return (
     <main className="w-screen min-h-screen bg-gradient-to-b from-blue-100 via-blue-300 to-blue-500">
@@ -20,14 +26,14 @@ export default async function Home() {
           </div>
 
           {/* user profile */}
-          { userName && 
+          { name && 
             <div className="flex items-center justify-center gap-2 font-medium text-xl">
-              Hello, {userName} <UserButton />
+              Hello, {name} <UserButton />
             </div>
           }
 
           {/* user buttons */}
-          { !!userId 
+          { user 
             ?
             <div className="flex gap-8">
               <Button className="flex gap-2 hover:invert"> Go to Chats <ArrowRight /> </Button>
@@ -45,7 +51,7 @@ export default async function Home() {
             <p> Upload your PDF and get instant answers to any questions about its content. Effortlessly find the information you need with our smart chatbot. </p>
           </div>
 
-          { !!userId && 
+          { user && 
             <div className="w-full ">
               <FileUpload />
             </div>

@@ -1,31 +1,29 @@
 "use server"
 import Chat from "../models/chat.model"
 import User from "../models/user.model"
-import Message from "../models/message.model"
 import { connectToDB } from "../mongoose"
 
 type ChatProp = {
-  id: String,
   userId: String,
   pdfName: String,
   pdfUrl: String,
   createdAt: Date,
   fileKey: String
 }
-export async function createChat({ id, userId, pdfName, pdfUrl, createdAt, fileKey }: ChatProp) {
+export async function createChat({ userId, pdfName, pdfUrl, createdAt, fileKey }: ChatProp) {
   try {
     connectToDB()
 
     // find the user that this chat will belong to
-    const user = await User.findOne({ id: userId })
+    const user = await User.findOne({ _id: userId })
     if(!user) throw new Error(`Can't find user ${userId}`)
 
     // create the new message and save it 
-    const createChat = new Chat({ id, userId, pdfName, pdfUrl, createdAt, fileKey })
+    const createChat = new Chat({ userId, pdfName, pdfUrl, createdAt, fileKey }, { _id: true })
     const newChat = await createChat.save()
 
     // push it to the user log
-    user.messages.push(newChat._id)
+    user.chatIds.push(newChat._id)
     await user.save()
 
     return newChat
