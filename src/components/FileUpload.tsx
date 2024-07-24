@@ -3,11 +3,13 @@ import { uploadToS3 } from '@/lib/s3'
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { Inbox, Loader2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { toast } from 'react-hot-toast'
 
 const FileUpload = () => {
+  const router = useRouter()
   const [uploading, setUploading] = useState(false)
   const { mutate, isPending } = useMutation({
     mutationFn: async ({ fileKey, fileName }: { fileKey: String, fileName: String}) => {
@@ -31,18 +33,20 @@ const FileUpload = () => {
       try {
         setUploading(true)
         const data = await uploadToS3(file)
-
         if(!data?.fileKey || !data?.fileName) {
           toast.error("Something went wrong, please try again later")
           return
         }
 
         mutate(data, {
-          onSuccess: (data) => {
-            toast.success(data.message)
+          onSuccess: ({ chatId }) => {
+            console.log(data)
+            toast.success("Successfully parsed PDF")
+            router.push(`/chat/${chatId}`)
           },
           onError: (err) => {
             toast.error("Error creating chat, please try again later")
+            console.log(("Error creating chat, please try again later"), err)
           }
         })
       } catch (error) {

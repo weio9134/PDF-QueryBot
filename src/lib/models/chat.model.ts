@@ -1,7 +1,6 @@
 import mongoose, { mongo } from "mongoose"
 
 const chatSchema = new mongoose.Schema({
-  id: { type: String, required: true},
   userId: { type: String, required: true},
   pdfName: { type: String, required: true},
   pdfUrl: { type: String, required: true},

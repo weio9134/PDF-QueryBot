@@ -5,7 +5,6 @@ export async function uploadToS3(file: File) {
     AWS.config.update({
       accessKeyId: process.env.NEXT_PUBLIC_AWS_KEY,
       secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET
-      
     })
 
     const s3 = new AWS.S3({
