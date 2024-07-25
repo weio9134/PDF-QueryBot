@@ -1,3 +1,4 @@
+import ChatComponent from '@/components/ChatComponent'
 import SideBar from '@/components/SideBar'
 import { fetchAllChat } from '@/lib/actions/chat.actions'
 import { fetchUser } from '@/lib/actions/user.actions'
@@ -41,6 +42,7 @@ const ChatPage = async ({ params: { chatId }}: ChatPageProps) => {
 
         {/* chat log */}
         <div className="flex-[3] border-l-slate-200 border-l-4">
+          <ChatComponent />
         </div> 
       </div>
     </div>
