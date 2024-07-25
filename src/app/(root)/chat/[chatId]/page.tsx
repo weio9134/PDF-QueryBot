@@ -22,14 +22,13 @@ const ChatPage = async ({ params: { chatId }}: ChatPageProps) => {
   const chats = await fetchAllChat(mongoUser._id)
   if(!chats) return redirect('/')
   
-  // console.log(chats)
   const currentChat = chats.find((chat: { _id: string }) => parseInt(chat._id) === parseInt(chatId))
   return (
     <div className="flex max-h-screen overflow-scroll">
       <div className="flex w-full max-h-screen overflow-scroll">
         {/* side bar */}
         <div className="flex-1 max-w-xs">
-          <SideBar chats={chats} currentChatId={parseInt(chatId)}/>
+          <SideBar chats={chats} currentChatId={chatId}/>
         </div>
 
         {/* pdf viewer */}
@@ -42,7 +41,7 @@ const ChatPage = async ({ params: { chatId }}: ChatPageProps) => {
 
         {/* chat log */}
         <div className="flex-[3] border-l-slate-200 border-l-4">
-          <ChatComponent />
+          <ChatComponent chatId={chatId}/>
         </div> 
       </div>
     </div>

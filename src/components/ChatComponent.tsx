@@ -1,20 +1,35 @@
 "use client"
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Input } from './ui/input'
 import { useChat } from 'ai/react'
 import { Button } from './ui/button'
 import { Send } from 'lucide-react'
 import Messages from './Messages'
 
-type ChatProps = {}
+type ChatProps = {
+  chatId: string
+}
 
-const ChatComponent = (props: ChatProps) => {
+const ChatComponent = ({ chatId }: ChatProps) => {
   const { input, handleInputChange, handleSubmit, messages } = useChat({
-    api: '/api/chat'
+    api: '/api/chat',
+    body: {
+      chatId
+    }
   })
 
+  useEffect(() => {
+    const container = document.getElementById('container')
+    if(container) {
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior: 'smooth'
+      })
+    }
+  }, [messages])
+
   return (
-    <div className='relative max-h-screen overflow-scroll'>
+    <div className='relative max-h-screen overflow-scroll' id="container">
       {/* header */}
       <div className='sticky top-0 inset-x-0 p-2 bg-white h-fit'>
         <h3 className='text-xl font-bold'> Chat </h3>

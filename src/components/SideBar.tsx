@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 
 type SideBarProp = {
   chats: any[],
-  currentChatId: number
+  currentChatId: string
 }
 
 const SideBar = ({ chats, currentChatId }: SideBarProp) => {
@@ -26,8 +26,8 @@ const SideBar = ({ chats, currentChatId }: SideBarProp) => {
               <div className={
                 cn('rounded-lg p-3 text-slate-300 flex items-center', 
                 {
-                  'bg-blue-600 text-white': parseInt(chat._id) === currentChatId,
-                  'hover:text-white': parseInt(chat._id) !== currentChatId,
+                  'bg-blue-600 text-white': chat._id.toString() === currentChatId,
+                  'hover:text-white': chat._id.toString() !== currentChatId,
                 })
               }>
                 <MessageCircle className='mr-2'/>
