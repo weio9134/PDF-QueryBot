@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^0.0.39",
     "@clerk/nextjs": "^5.2.4",
     "@langchain/community": "^0.2.20",
     "@pinecone-database/doc-splitter": "^0.0.1",
@@ -16,6 +17,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@tanstack/react-query": "^5.51.11",
     "@types/md5": "^2.3.5",
+    "ai": "^3.2.35",
     "aws-sdk": "^2.1661.0",
     "axios": "^1.7.2",
     "class-variance-authority": "^0.7.0",
@@ -26,6 +28,7 @@
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.1",
     "next": "14.2.5",
+    "openai": "^4.53.0",
     "openai-edge": "^1.2.2",
     "pdf-parse": "^1.1.1",
     "react": "^18.3.1",
