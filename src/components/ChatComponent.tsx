@@ -1,21 +1,32 @@
 "use client"
 import React, { useEffect } from 'react'
 import { Input } from './ui/input'
-import { useChat } from 'ai/react'
+import { Message, useChat } from 'ai/react'
 import { Button } from './ui/button'
 import { Send } from 'lucide-react'
 import Messages from './Messages'
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 
 type ChatProps = {
   chatId: string
 }
 
 const ChatComponent = ({ chatId }: ChatProps) => {
+  const { data } = useQuery({
+    queryKey: ['Chat', chatId],
+    queryFn: async () => {
+      const response = await axios.post<Message[]>('/api/get-message', { chatId })
+      return response.data
+    }
+  })
+
   const { input, handleInputChange, handleSubmit, messages } = useChat({
     api: '/api/chat',
     body: {
       chatId
-    }
+    },
+    initialMessages: data || []
   })
 
   useEffect(() => {
@@ -26,6 +37,7 @@ const ChatComponent = ({ chatId }: ChatProps) => {
         behavior: 'smooth'
       })
     }
+    console.log("THIS IS MESSAGES", messages)
   }, [messages])
 
   return (

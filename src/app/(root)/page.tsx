@@ -36,7 +36,11 @@ export default async function Home() {
           { user 
             ?
             <div className="flex gap-8">
-              <Button className="flex gap-2 hover:invert"> Go to Chats <ArrowRight /> </Button>
+              <Link href={'/chat/0'}>
+                <Button className="flex gap-2 hover:invert"> 
+                  Go to Chats <ArrowRight /> 
+                </Button>
+              </Link>
               <Button className="flex gap-2 bg invert hover:invert-0"> Manage Subscription </Button>
             </div> 
             :

@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server';
 import { Message, streamText } from 'ai';
 import { getContext } from '@/lib/context';
 import Chat from '@/lib/models/chat.model';
+import { createMessage } from '@/lib/actions/message.actions';
 
 const openai = createOpenAI({
   compatibility: 'strict',
@@ -13,6 +14,15 @@ export async function POST(req: NextRequest) {
   try {
     const { messages, chatId } = await req.json()
     const lastMessage = messages[messages.length - 1].content
+
+    // add user message to db
+    await createMessage({
+      chatId: chatId,
+      role: 'user',
+      content: lastMessage
+    })
+
+    // extract vectorized context
     const chat = await Chat.findById({ _id: chatId })
     const context  = await getContext(lastMessage, chat.fileKey)
 
@@ -34,11 +44,19 @@ export async function POST(req: NextRequest) {
       `,
     }
 
+    // feed in the prompt and save AI message back to db
     const result = await streamText({
       model: openai('gpt-3.5-turbo'),
       messages: [
         prompt, ...messages.filter((message: Message) => message.role === 'user')
-      ]
+      ],
+      onFinish: async (completion) => {
+        await createMessage({
+          chatId: chatId,
+          role: 'system',
+          content: completion.text
+        })
+      }
     })
 
     return result.toAIStreamResponse()

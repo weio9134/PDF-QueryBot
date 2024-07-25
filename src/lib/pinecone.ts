@@ -27,11 +27,9 @@ export async function loadS3IntoPinecone(fileKey: string) {
 
   // segment pdf
   const documents = await Promise.all(pages.map(prepareDocument))
-  console.log("FINISHED PREPARING DOCS")
 
   // vectorization and embedding
   const vectors = await Promise.all(documents.flat().map(embedDcoument))
-  console.log("FINISHED EMBEDDING DOCS")
 
   // upload to pinecone
   const client = await getPinconeClient()

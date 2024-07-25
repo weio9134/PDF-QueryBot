@@ -31,7 +31,6 @@ export async function POST(req: NextRequest) {
 
     // vectorize pdf
     await loadS3IntoPinecone(fileKey)
-    console.log("DONE VECTORIZING")
 
     // create new chat
     const date = new Date()
