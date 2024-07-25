@@ -1,5 +1,6 @@
 "use server"
 import Chat from "../models/chat.model"
+import Message from "../models/message.model"
 import User from "../models/user.model"
 import { connectToDB } from "../mongoose"
 
@@ -37,10 +38,10 @@ export async function fetchAllChat(userId: String) {
     connectToDB()
 
     // find the corresponding user and all of their chats
-    const chats = await User.findOne({ _id: userId }).populate('chatIds');
-    if(!chats) throw new Error(`Can't find chats by user ${userId}`)
+    const user = await User.findOne({ _id: userId }).populate('chatIds');
+    if(!user) throw new Error(`Can't find chats by user ${userId}`)
     
-    return chats.chatIds
+    return user.chatIds
   } catch (error: any) {
     throw new Error(`Failed to fetch all chats:\n ${error.message}`)
   }
@@ -51,10 +52,34 @@ export async function fetchChatById(chatId: string) {
     connectToDB()
 
     // find the corresponding chat
-    const chat = await Chat.findOne({ id: chatId })
+    const chat = await Chat.findOne({ _id: chatId })
     if(!chat) throw new Error(`Can't find chat ${chatId}`)
 
     return chat
+  } catch (error: any) {
+    throw new Error(`Failed to find chat:\n ${error.message}`)
+  }
+}
+
+export async function getChatMessages(chatId: string) {
+  try {
+    connectToDB()
+
+    // find the corresponding chat
+    const chat = await Chat.findById(chatId).populate({
+      path: "messages"
+    })
+    if(!chat) throw new Error(`Can't find chat for messages ${chatId}`)
+    
+    const messages = chat.messages
+    const list = messages.map((message: any) => {
+      return {
+        role: message.role,
+        content: message.content
+      }
+    })
+
+    return list
   } catch (error: any) {
     throw new Error(`Failed to find chat:\n ${error.message}`)
   }
