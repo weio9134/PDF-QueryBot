@@ -2,6 +2,7 @@ import ChatComponent from '@/components/ChatComponent'
 import SideBar from '@/components/SideBar'
 import { fetchAllChat } from '@/lib/actions/chat.actions'
 import { fetchUser } from '@/lib/actions/user.actions'
+import { checkSubscription } from '@/lib/subscription'
 import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import React, { useState } from 'react'
@@ -16,19 +17,18 @@ const ChatPage = async ({ params: { chatId }}: ChatPageProps) => {
   const user = await currentUser()
   if(!user) return redirect('/')
   
-  const mongoUser = await fetchUser(user.id)
-  if(!mongoUser) return redirect('/')
-  
-  const chats = await fetchAllChat(mongoUser._id)
+  const chats = await fetchAllChat(user.id)
   if(!chats) return redirect('/')
   
   const currentChat = chats.find((chat: { _id: string }) => parseInt(chat._id) === parseInt(chatId))
+  const isPro = await checkSubscription()
+
   return (
     <div className="flex max-h-screen overflow-scroll">
       <div className="flex w-full max-h-screen overflow-scroll">
         {/* side bar */}
         <div className="flex-1 max-w-xs">
-          <SideBar chats={chats} currentChatId={chatId}/>
+          <SideBar chats={chats} currentChatId={chatId} isPro={isPro}/>
         </div>
 
         {/* pdf viewer */}

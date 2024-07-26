@@ -1,20 +1,26 @@
 import { Button } from "@/components/ui/button";
 import { UserButton } from "@clerk/nextjs";
-import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
-import Image from "next/image";
+import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import { LogIn, ArrowRight } from "lucide-react";
 import FileUpload from "@/components/FileUpload";
 import { updateUser } from "@/lib/actions/user.actions";
+import SubscriptionButton from "@/components/SubscriptionButton";
+import { checkSubscription } from "@/lib/subscription";
+import { getFirstChat } from "@/lib/actions/chat.actions";
 
 export default async function Home() {
-  const user = await currentUser();
-  const name = user?.fullName
+  const user = await currentUser()
+  let name: string | null = null
+  let firstChat = null
+
   if(user) {
     await updateUser(user.id)
+    firstChat = await getFirstChat(user.id)
+    name = user.fullName
   }
   
-  // const userName = userId ? (await clerkClient().users.getUser(userId)).username : ""
+  const isPro = await checkSubscription()
 
   return (
     <main className="w-screen min-h-screen bg-gradient-to-b from-blue-100 via-blue-300 to-blue-500">
@@ -36,16 +42,20 @@ export default async function Home() {
           { user 
             ?
             <div className="flex gap-8">
-              <Link href={'/chat/0'}>
-                <Button className="flex gap-2 hover:invert"> 
-                  Go to Chats <ArrowRight /> 
-                </Button>
-              </Link>
-              <Button className="flex gap-2 bg invert hover:invert-0"> Manage Subscription </Button>
+              { firstChat && 
+                <Link href={`/chat/${firstChat._id}`}>
+                  <Button className="flex gap-2 hover:invert"> 
+                    Go to Chats <ArrowRight />
+                  </Button>
+                </Link>
+              }
+              <SubscriptionButton isPro={isPro} />
             </div> 
             :
             <Link href="/sign-in">
-              <Button className="flex gap-2"> Login to get started! <LogIn /> </Button>
+              <Button className="flex gap-2">
+                Login to get started! <LogIn /> 
+              </Button>
             </Link>
           }
 

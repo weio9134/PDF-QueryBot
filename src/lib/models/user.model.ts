@@ -7,7 +7,11 @@ const userSchema = new mongoose.Schema({
       type: mongoose.Schema.ObjectId,
       ref: 'Chat'
     }
-  ]
+  ],
+  subscriptionId: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Subscription'
+    }
 })
 
 const User = mongoose.models.User || mongoose.model('User', userSchema)

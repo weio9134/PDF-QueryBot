@@ -1,7 +1,5 @@
 import { createChat } from "@/lib/actions/chat.actions"
 import { fetchUser } from "@/lib/actions/user.actions"
-import Chat from "@/lib/models/chat.model"
-import User from "@/lib/models/user.model"
 import { loadS3IntoPinecone } from "@/lib/pinecone"
 import { getS3URL } from "@/lib/s3"
 import { currentUser } from "@clerk/nextjs/server"
@@ -35,7 +33,7 @@ export async function POST(req: NextRequest) {
     // create new chat
     const date = new Date()
     const chat = await createChat({
-      userId: userInfo._id, 
+      userId: user.id,
       pdfName: fileName, 
       pdfUrl: getS3URL(fileKey), 
       createdAt: date,

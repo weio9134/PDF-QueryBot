@@ -1,16 +1,18 @@
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from './ui/button'
 import { MessageCircle, PlusCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import SubscriptionButton from './SubscriptionButton'
 
 
 type SideBarProp = {
   chats: any[],
-  currentChatId: string
+  currentChatId: string,
+  isPro: boolean
 }
 
-const SideBar = ({ chats, currentChatId }: SideBarProp) => {
+const SideBar = ({ chats, currentChatId, isPro }: SideBarProp) => {
   return (
     <div className='w-full h-screen p-4 text-gray-200 bg-gray-900'>
       <Link href={'/'}>
@@ -40,10 +42,13 @@ const SideBar = ({ chats, currentChatId }: SideBarProp) => {
         )}
       </div>
 
-      <div className="absolute bottom-4 left-4">
-        <div className='flex flex-wrap items-center gap-2 text-sm text-slate-300 '>
-          <Link href={'/'}> Home </Link>
-          <Link href={'/'}> Source </Link>
+      <div className="absolute bottom-4">
+        <div className="flex flex-col justify-center items-center w-full">
+          <div className='flex flex-wrap items-center gap-2 text-sm text-slate-300 '>
+            <Link href={'/'}> Home </Link>
+            <Link href={'/'}> Source </Link>
+          </div>
+          <SubscriptionButton isPro={isPro} />
         </div>
       </div>
     </div>
