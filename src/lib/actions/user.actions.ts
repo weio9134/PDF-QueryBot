@@ -6,12 +6,13 @@ import { connectToDB } from "../mongoose"
 export async function updateUser(id: string): Promise<void> {
   try {
     connectToDB()
-    const user = await User.findOneAndUpdate({ id: id }, { upsert: true })
+    const user = await User.findOneAndUpdate({ id: id })
 
     if(!user) {
       await User.create({
         id: id,
-        chatIds: []
+        chatIds: [],
+        subscriptionIds: [],
       })
     }
   } catch (error: any) {
@@ -23,7 +24,8 @@ export async function fetchUser(userId: string) {
   try {
     connectToDB()
 
-    return await User.findOne({ id: userId })
+    const user = await User.findOne({ id: userId })
+    return user
   } catch (error: any) {
     throw new Error(`Failed to find user:\n ${error.message}`)
   }

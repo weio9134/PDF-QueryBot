@@ -16,7 +16,7 @@ export async function createChat({ userId, pdfName, pdfUrl, createdAt, fileKey }
     connectToDB()
 
     // find the user that this chat will belong to
-    const user = await User.findOne({ _id: userId })
+    const user = await User.findOne({ id: userId })
     if(!user) throw new Error(`Can't find user ${userId}`)
 
     // create the new message and save it 
@@ -38,7 +38,7 @@ export async function fetchAllChat(userId: String) {
     connectToDB()
 
     // find the corresponding user and all of their chats
-    const user = await User.findOne({ _id: userId }).populate('chatIds');
+    const user = await User.findOne({ id: userId }).populate('chatIds');
     if(!user) throw new Error(`Can't find chats by user ${userId}`)
     
     return user.chatIds
@@ -82,5 +82,18 @@ export async function getChatMessages(chatId: string) {
     return list
   } catch (error: any) {
     throw new Error(`Failed to find chat:\n ${error.message}`)
+  }
+}
+
+export async function getFirstChat(userId: string) {
+  try {
+    connectToDB()
+
+    const user = await User.findOne({ id: userId }).populate('chatIds');
+    if(!user) throw new Error(`Can't find chats by user ${userId}`)
+    
+    return user.chatIds[0]
+  } catch (error: any) {
+    throw new Error(`Failed to fetch first chat:\n ${error.message}`)
   }
 }
