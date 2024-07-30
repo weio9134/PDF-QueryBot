@@ -40,7 +40,6 @@ const FileUpload = () => {
 
         mutate(data, {
           onSuccess: ({ chatId }) => {
-            console.log(data)
             toast.success("Successfully parsed PDF")
             router.push(`/chat/${chatId}`)
           },

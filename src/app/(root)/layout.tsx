@@ -21,7 +21,7 @@ export default function RootLayout({
     <ClerkProvider afterSignOutUrl={"/"}>
       <Provider>
         <html lang="en">
-          <body className={inter.className}>
+          <body className={`${inter.className} overflow-hidden`}>
             <Toaster />
             {children}
           </body>
