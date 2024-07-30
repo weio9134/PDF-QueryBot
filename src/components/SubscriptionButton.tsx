@@ -25,7 +25,7 @@ const SubscriptionButton = ({ isPro }: Props) => {
     <Button className="flex gap-2 bg invert hover:invert-0" disabled={loading} onClick={handleSubscription}> 
       {isPro ? 
         "Manage Subscription" : 
-        <> Get Unlimited Access <Infinity /> </>
+        <> Get Premium <Infinity /> </>
       }
     </Button>
   )

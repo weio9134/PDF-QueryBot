@@ -67,7 +67,8 @@ export async function getChatMessages(chatId: string) {
 
     // find the corresponding chat
     const chat = await Chat.findById(chatId).populate({
-      path: "messages"
+      path: "messages",
+      model: Message
     })
     if(!chat) throw new Error(`Can't find chat for messages ${chatId}`)
     

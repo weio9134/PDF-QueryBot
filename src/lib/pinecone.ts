@@ -35,7 +35,6 @@ export async function loadS3IntoPinecone(fileKey: string) {
   const client = await getPinconeClient()
   const index = client.index('pdf-querybot')
   
-  console.log("uploading vectors to pinecone")
   const nameSpace = convertToAscii(fileKey)
   index.namespace(nameSpace).upsert(vectors)
   
