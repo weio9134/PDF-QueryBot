@@ -6,7 +6,7 @@ import { connectToDB } from "../mongoose"
 export async function updateUser(id: string): Promise<void> {
   try {
     connectToDB()
-    const user = await User.findOneAndUpdate({ id: id })
+    const user = await User.findOne({ id: id })
 
     if(!user) {
       await User.create({

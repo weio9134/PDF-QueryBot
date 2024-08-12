@@ -23,6 +23,7 @@ const ChatPage = async ({ params: { chatId }}: ChatPageProps) => {
   const currentChat = await fetchChatById(chatId)
   const isPro = await checkSubscription()
 
+
   return (
     <div className="flex max-h-screen overflow-scroll">
       <div className="flex w-full max-h-screen overflow-scroll flex-wrap lg:flex-nowrap">

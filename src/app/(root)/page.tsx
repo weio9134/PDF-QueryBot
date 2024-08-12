@@ -8,6 +8,7 @@ import { updateUser } from "@/lib/actions/user.actions";
 import SubscriptionButton from "@/components/SubscriptionButton";
 import { checkSubscription } from "@/lib/subscription";
 import { getFirstChat } from "@/lib/actions/chat.actions";
+import ChatButton from "@/components/ChatButton";
 
 export default async function Home() {
   const user = await currentUser()
@@ -44,9 +45,7 @@ export default async function Home() {
             <div className="flex gap-8">
               { firstChat && 
                 <Link href={`/chat/${firstChat._id}`}>
-                  <Button className="flex gap-2 hover:invert"> 
-                    Go to Chats <ArrowRight />
-                  </Button>
+                  <ChatButton />
                 </Link>
               }
               <SubscriptionButton isPro={isPro} />

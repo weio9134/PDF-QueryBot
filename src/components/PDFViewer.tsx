@@ -6,16 +6,13 @@ type Props = {
 }
 
 const PDFViewer = ({ url }: Props) => {
-  const [pdfUrl, setPdfUrl] = useState('')
-  useEffect(() => {
-    setPdfUrl(`https://docs.google.com/gview?url=${url}&embedded=true`)
-  }, [url])
+  const [pdf, setPDF] = useState('')
+  useEffect(() => setPDF(`https://docs.google.com/gview?url=${url}&embedded=true`), [url])
 
   return (
     <>
       <iframe
-        key={pdfUrl}
-        src={pdfUrl}
+        src={pdf}
         className='w-full h-full'
       />
     </>
