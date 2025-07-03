@@ -1,30 +1,30 @@
-import { createOpenAI } from '@ai-sdk/openai';
-import { NextRequest } from 'next/server';
-import { Message, streamText } from 'ai';
-import { getContext } from '@/lib/context';
-import Chat from '@/lib/models/chat.model';
-import { createMessage } from '@/lib/actions/message.actions';
+import { createOpenAI } from "@ai-sdk/openai";
+import { NextRequest } from "next/server";
+import { Message, streamText } from "ai";
+import { getContext } from "@/lib/context";
+import Chat from "@/lib/models/chat.model";
+import { createMessage } from "@/lib/actions/message.actions";
 
 const openai = createOpenAI({
-  compatibility: 'strict',
+  compatibility: "strict",
   apiKey: process.env.OPENAI_KEY,
-})
+});
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages, chatId } = await req.json()
-    const lastMessage = messages[messages.length - 1].content
+    const { messages, chatId } = await req.json();
+    const lastMessage = messages[messages.length - 1].content;
 
     // add user message to db
     await createMessage({
       chatId: chatId,
-      role: 'user',
-      content: lastMessage
-    })
+      role: "user",
+      content: lastMessage,
+    });
 
     // extract vectorized context
-    const chat = await Chat.findById({ _id: chatId })
-    const context  = await getContext(lastMessage, chat.fileKey)
+    const chat = await Chat.findById({ _id: chatId });
+    const context = await getContext(lastMessage, chat.fileKey);
 
     const prompt = {
       role: "system",
@@ -42,26 +42,27 @@ export async function POST(req: NextRequest) {
       AI assistant will not apologize for previous responses, but instead will indicated new information was gained.
       AI assistant will not invent anything that is not drawn directly from the context.
       `,
-    }
+    };
 
     // feed in the prompt and save AI message back to db
     const result = await streamText({
-      model: openai('gpt-3.5-turbo'),
+      model: openai("gpt-4o"),
       messages: [
-        prompt, ...messages.filter((message: Message) => message.role === 'user')
+        prompt,
+        ...messages.filter((message: Message) => message.role === "user"),
       ],
       onFinish: async (completion) => {
         await createMessage({
           chatId: chatId,
-          role: 'system',
-          content: completion.text
-        })
-      }
-    })
+          role: "system",
+          content: completion.text,
+        });
+      },
+    });
 
-    return result.toAIStreamResponse()
+    return result.toAIStreamResponse();
   } catch (error) {
-    console.error("ERROR CHATTING", error)
-    throw error
+    console.error("ERROR CHATTING", error);
+    throw error;
   }
 }
